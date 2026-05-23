@@ -213,8 +213,4 @@ app.post('/api/download', async (req, res, next) => {
   }
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 app.use((err,
