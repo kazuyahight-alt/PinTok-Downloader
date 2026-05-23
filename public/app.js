@@ -51,11 +51,20 @@ analyzeForm.addEventListener('submit', async (event) => {
       body: JSON.stringify({ url })
     });
 
-    const result = await response.json();
+const contentType = response.headers.get('content-type') || '';
 
-    if (!response.ok || !result.success) {
-      throw new Error(result.message || 'Analyze failed.');
-    }
+let result;
+
+if (contentType.includes('application/json')) {
+  result = await response.json();
+} else {
+  const text = await response.text();
+  throw new Error(text.slice(0, 120) || 'Server returned a non-JSON response.');
+}
+
+if (!response.ok || !result.success) {
+  throw new Error(result.message || 'Analyze failed.');
+}
 
     currentResult = {
       ...result,
